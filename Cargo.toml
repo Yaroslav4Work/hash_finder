@@ -1,0 +1,16 @@
+[package]
+name = "hash_finder"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+sha256 = "1.6.0"
+tokio = { version = "1.48.0", features = ["rt-multi-thread", "rt", "macros", "sync"] }
+thiserror = "2.0.17"
+
+[dev-dependencies]
+criterion = { version = "0.7.0", features = ["async", "async_futures"] }
+
+[[bench]]
+name = "benchmark"
+harness = false
