@@ -52,8 +52,8 @@ prints the hash and a number if the hash ends with N zeros.
 10. I also created a benchmark (`cargo bench`), but it doesn't capture the essence of the problem due to the standard
     execution time constraints, the use of the `criterion` runtime, and a lot of unnecessary console output. I might fix
     this in the future;
-11. I also abandoned the tests due to uncontrolled println output. This could probably be fixed by rewriting println to
-    write or creating an external channel to intercept messages, but I think I demonstrated my multithreaded programming
+11. I also abandoned the tests due to uncontrolled `println` output. This could probably be fixed by rewriting `println` to
+    `write` or creating an external channel to intercept messages, but I think I demonstrated my multithreaded programming
     skills for this task.
 
 **Thank you for reading. I would greatly appreciate any objective criticism and suggestions for improvement.**
