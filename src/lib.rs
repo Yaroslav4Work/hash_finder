@@ -78,14 +78,17 @@ pub mod async_impl {
         }
 
         pub async fn run(&self) {
-            let mut from_main_senders = HashMap::<u8, Sender<ChannelEvent>>::new();
-            let mut from_thread_receivers = Vec::new();
+            let capacity = self.tasks_count as usize;
 
-            let mut async_tasks = Vec::new();
+            let mut from_main_senders =
+                HashMap::<u8, Sender<ChannelEvent>>::with_capacity(capacity);
+            let mut from_thread_receivers = Vec::with_capacity(capacity);
+
+            let mut async_tasks = Vec::with_capacity(capacity);
 
             for i in 0..self.tasks_count {
-                let (m_sender, mut m_receiver) = channel::<ChannelEvent>(1024);
-                let (t_sender, t_receiver) = channel::<ChannelEvent>(1024);
+                let (m_sender, mut m_receiver) = channel::<ChannelEvent>(capacity * 100);
+                let (t_sender, t_receiver) = channel::<ChannelEvent>(capacity * 10);
 
                 from_main_senders.insert(i, m_sender);
                 from_thread_receivers.push(t_receiver);
@@ -183,7 +186,7 @@ pub mod async_impl {
                 .collect::<JoinSet<Result<Result<(), ChannelError>, JoinError>>>()
                 .join_all()
                 .await;
-            
+
             for i in res {
                 if let Err(join_err) = i {
                     eprintln!("{:?}", join_err);
@@ -236,10 +239,13 @@ pub mod multithread_impl {
         }
 
         pub fn run(&self) -> Result<(), HashFinderError> {
-            let mut from_main_senders = HashMap::<u8, Sender<ChannelEvent>>::new();
-            let mut from_thread_receivers = Vec::new();
+            let capacity = self.threads_count as usize;
 
-            let mut threads = Vec::new();
+            let mut from_main_senders =
+                HashMap::<u8, Sender<ChannelEvent>>::with_capacity(capacity);
+            let mut from_thread_receivers = Vec::with_capacity(capacity);
+
+            let mut threads = Vec::with_capacity(capacity);
 
             for i in 0..self.threads_count {
                 let (m_sender, m_receiver) = channel::<ChannelEvent>();
