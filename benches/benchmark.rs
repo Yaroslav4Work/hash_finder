@@ -1,6 +1,6 @@
-use criterion::async_executor::FuturesExecutor;
 use criterion::{Criterion, criterion_group, criterion_main};
 use hash_finder::{async_impl, multithread_impl, sync_impl};
+use tokio::runtime::Runtime;
 
 const N: u8 = 2;
 const F: u32 = 1;
@@ -17,9 +17,11 @@ fn criterion_benchmark(c: &mut Criterion) {
 
     group.bench_function("multithread", |b| b.iter(|| hash_finder_multithread.run()));
 
+    let rt = Runtime::new().unwrap();
+
     group.bench_function("my_async_function", |b| {
         // Use AsyncBencher to run the async function
-        b.to_async(FuturesExecutor)
+        b.to_async(&rt)
             .iter(|| async { hash_finder_async.run().await });
     });
 
